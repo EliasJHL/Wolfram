@@ -1,11 +1,8 @@
 {-
--- Main.hs for B-FUN-400-MPL-4-1-bswolfram-elias-josue.hajjar-llauquen in /home/elias/Documents/Epitech/Wolfram/B-FUN-400-MPL-4-1-bswolfram-elias-josue.hajjar-llauquen
---
--- Made by Elias Josué HAJJAR LLAUQUEN
--- Login   <elias-josue.hajjar-llauquen@epitech.eu>
---
--- Started on  Mon Feb 17 09:21:57 2025 Elias Josué HAJJAR LLAUQUEN
--- Last update Thu Feb 26 15:19:14 2025 Elias Josué HAJJAR LLAUQUEN
+-- EPITECH PROJECT, 2025
+-- PDG
+-- File description:
+-- PDG
 -}
 
 import System.Environment(getArgs)
@@ -65,7 +62,8 @@ applyRule 90 = rule90
 applyRule 110 = rule110
 
 applyToRow :: (Bool -> Bool -> Bool -> Bool) -> [Bool] -> [Bool]
-applyToRow rule cells = zipWith3 rule (False:init cells) cells (tail cells ++ [False])
+applyToRow rule cells = zipWith3 rule 
+    (False:init cells) cells (tail cells ++ [False])
 
 boolToChar::Bool -> String
 boolToChar True = "*"
@@ -73,23 +71,21 @@ boolToChar False = " "
 
 display::Maybe Conf -> IO()
 display Nothing = return()
-display (Just conf) = do
-    let window_size = window conf
-    let init = replicate (window_size `div` 2) False ++ [True] ++ replicate (window_size `div` 2) False
-    loop init (numLines conf) (applyRule (rule conf)) (move conf) (start conf)
+display (Just conf) =
+    let init = replicate ((window conf) `div` 2) False ++ [True] ++ 
+               replicate ((window conf) `div` 2) False 
+    in loop init (numLines conf) (applyRule (rule conf))
+        (move conf) (start conf)
 
 printRow::[Bool] -> Int -> IO()
-printRow row move = do
-    let line = concat (map boolToChar row)
-    if (move >= 0) then 
-        putStrLn (replicate move ' ' ++ line)
-    else do
-        putStrLn (line ++ replicate (-move) ' ')
+printRow row move =
+    let line = concat (map boolToChar row) in
+    putStrLn (replicate move ' ' ++ line)
 
 loop::[Bool] -> Int -> (Bool -> Bool -> Bool -> Bool) -> Int -> Int -> IO()
 loop _ 0 _ _ _ = return()
-loop row i rule move start = do
-    printRow row move
+loop row i rule move start =
+    printRow row move >>
     loop (applyToRow rule row) (i - 1) rule move start
 
 getOpts::Conf -> [String] -> Maybe Conf
@@ -106,6 +102,7 @@ getValue flag args def_val = case dropWhile (/= flag) args of
     (_:value:_) -> read value
     _ -> def_val
 
+main::IO()
 main = do
     args <- getArgs
     let config = defaultConf

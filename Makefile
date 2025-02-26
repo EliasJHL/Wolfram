@@ -21,4 +21,7 @@ compile:
 clean:
 	$(RM) $(NAME)
 
+fclean: clean
+	stack clean
+
 re:	clean all
