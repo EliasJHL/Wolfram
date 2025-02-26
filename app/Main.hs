@@ -5,7 +5,7 @@
 -- Login   <elias-josue.hajjar-llauquen@epitech.eu>
 --
 -- Started on  Mon Feb 17 09:21:57 2025 Elias Josué HAJJAR LLAUQUEN
--- Last update Tue Feb 24 23:23:49 2025 Elias Josué HAJJAR LLAUQUEN
+-- Last update Thu Feb 26 15:19:14 2025 Elias Josué HAJJAR LLAUQUEN
 -}
 
 import System.Environment(getArgs)
@@ -74,7 +74,8 @@ boolToChar False = " "
 display::Maybe Conf -> IO()
 display Nothing = return()
 display (Just conf) = do
-    let init = replicate ((window conf) - 1) False ++ [True] ++ replicate ((window conf) - 1) False
+    let window_size = window conf
+    let init = replicate (window_size `div` 2) False ++ [True] ++ replicate (window_size `div` 2) False
     loop init (numLines conf) (applyRule (rule conf)) (move conf) (start conf)
 
 printRow::[Bool] -> Int -> IO()
@@ -110,4 +111,3 @@ main = do
     let config = defaultConf
     let maybeConfig = getOpts config args
     display maybeConfig
-

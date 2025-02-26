@@ -5,12 +5,15 @@
 ## Makefile
 ##
 
-NAME = wolfram-exe
+NAME_EXEC = wolfram-exe
 
-all: $(NAME) 
+NAME = wolfram
 
-$(NAME):	compile
-	cp `stack path --local-install-root`/bin/$(NAME) .
+all: $(NAME_EXEC) 
+
+$(NAME_EXEC):	compile
+	cp `stack path --local-install-root`/bin/$(NAME_EXEC) .
+	mv $(NAME_EXEC) $(NAME)
 
 compile:
 	stack build
