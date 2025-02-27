@@ -109,10 +109,9 @@ getValue flag args def_val = case dropWhile (/= flag) args of
 main::IO()
 main = do
     args <- getArgs
-    let config = defaultConf
-    let maybeConfig = getOpts config args
+    let maybeConfig = getOpts defaultConf args
     let rows = display maybeConfig
     case maybeConfig of
-        Nothing -> return()
-        _ -> printRow (drop (start (fromJust maybeConfig)) rows)
-                (move (fromJust maybeConfig))
+        Just conf | rule conf /= -99 -> printRow (drop (start (fromJust maybeConfig)) rows)
+                                      (move (fromJust maybeConfig))
+        _ -> return()
