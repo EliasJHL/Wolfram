@@ -81,11 +81,13 @@ printRow::[[Bool]] -> Int -> Int -> IO()
 printRow [] _ _ = return ()
 printRow (x:y) move window
     | move < 0 =
-        putStrLn (take window (concatMap boolToChar (take ((length x - 2000) - (-move))
-            (drop (1000 + (-move)) x)))) >> printRow y move window
+        putStrLn (take window (concatMap boolToChar 
+                    (take ((length x - 2000) - (-move))
+                    (drop (1000 + (-move)) x)))) >> printRow y move window
     | move >= 0 =
-        putStrLn (take window (concatMap boolToChar (take ((length x - 2000) + move)
-            (drop (1000 - move) x)))) >> printRow y move window
+        putStrLn (take window (concatMap boolToChar 
+                    (take ((length x - 2000) + move)
+                    (drop (1000 - move) x)))) >> printRow y move window
 
 loop::[Bool] -> Int -> (Bool -> Bool -> Bool -> Bool) -> Int -> Int -> [[Bool]]
 loop _ 0 _ _ _ = []
