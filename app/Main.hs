@@ -77,15 +77,15 @@ display (Just conf) =
     in loop init (numLines conf) (applyRule (rule conf))
         (move conf) (start conf)
 
-printRow::[[Bool]] -> Int -> IO()
-printRow [] _ = return ()
-printRow (x:y) move
+printRow::[[Bool]] -> Int -> Int -> IO()
+printRow [] _ _ = return ()
+printRow (x:y) move window
     | move < 0 =
-        putStrLn (concatMap boolToChar (take ((length x - 2000) - (-move))
-            (drop (1000 + (-move)) x))) >> printRow y move
+        putStrLn (take window (concatMap boolToChar (take ((length x - 2000) - (-move))
+            (drop (1000 + (-move)) x)))) >> printRow y move window
     | move >= 0 =
-        putStrLn (concatMap boolToChar (take ((length x - 2000) + move)
-            (drop (1000 - move) x))) >> printRow y move
+        putStrLn (take window (concatMap boolToChar (take ((length x - 2000) + move)
+            (drop (1000 - move) x)))) >> printRow y move window
 
 loop::[Bool] -> Int -> (Bool -> Bool -> Bool -> Bool) -> Int -> Int -> [[Bool]]
 loop _ 0 _ _ _ = []
@@ -112,6 +112,8 @@ main = do
     let maybeConfig = getOpts defaultConf args
     let rows = display maybeConfig
     case maybeConfig of
-        Just conf | rule conf /= -99 -> printRow (drop (start (fromJust maybeConfig)) rows)
-                                      (move (fromJust maybeConfig))
+        Just conf | rule conf /= -99 -> printRow (drop (start (fromJust 
+                                            maybeConfig)) rows)
+                                        (move (fromJust maybeConfig))
+                                        (window (fromJust maybeConfig))
         _ -> return()
