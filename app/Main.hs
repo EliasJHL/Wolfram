@@ -69,24 +69,28 @@ boolToChar::Bool -> String
 boolToChar True = "*"
 boolToChar False = " "
 
-display::Maybe Conf -> IO()
-display Nothing = return()
+display::Maybe Conf -> [[Bool]]
+display Nothing = []
 display (Just conf) =
-    let init = replicate ((window conf) `div` 2) False ++ [True] ++ 
-               replicate ((window conf) `div` 2) False 
+    let init = replicate (((window conf) `div` 2) + 1000) False ++ [True] ++ 
+               replicate (((window conf) `div` 2) + 1000) False 
     in loop init (numLines conf) (applyRule (rule conf))
         (move conf) (start conf)
 
-printRow::[Bool] -> Int -> IO()
-printRow row move =
-    let line = concat (map boolToChar row) in
-    putStrLn (replicate move ' ' ++ line)
+printRow::[[Bool]] -> Int -> IO()
+printRow [] _ = return ()
+printRow (x:y) move
+    | move < 0 =
+        putStrLn (concatMap boolToChar (take ((length x - 2000) - (-move))
+            (drop (1000 + (-move)) x))) >> printRow y move
+    | move >= 0 =
+        putStrLn (concatMap boolToChar (take ((length x - 2000) + move)
+            (drop (1000 - move) x))) >> printRow y move
 
-loop::[Bool] -> Int -> (Bool -> Bool -> Bool -> Bool) -> Int -> Int -> IO()
-loop _ 0 _ _ _ = return()
+loop::[Bool] -> Int -> (Bool -> Bool -> Bool -> Bool) -> Int -> Int -> [[Bool]]
+loop _ 0 _ _ _ = []
 loop row i rule move start =
-    printRow row move >>
-    loop (applyToRow rule row) (i - 1) rule move start
+        row : loop (applyToRow rule row) (i - 1) rule move start
 
 getOpts::Conf -> [String] -> Maybe Conf
 getOpts conf args = Just (conf {
@@ -107,4 +111,8 @@ main = do
     args <- getArgs
     let config = defaultConf
     let maybeConfig = getOpts config args
-    display maybeConfig
+    let rows = display maybeConfig
+    case maybeConfig of
+        Nothing -> return()
+        _ -> printRow (drop (start (fromJust maybeConfig)) rows)
+                (move (fromJust maybeConfig))
