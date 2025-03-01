@@ -6,8 +6,8 @@
 -}
 
 import System.Environment(getArgs)
-import Data.List()
 import Data.Maybe(fromJust)
+import System.Exit (exitWith, ExitCode(..))
 
 data Conf = Conf {
     rule::Int,
@@ -60,9 +60,10 @@ applyRule :: Int -> Bool -> Bool -> Bool -> Bool
 applyRule 30 = rule30
 applyRule 90 = rule90
 applyRule 110 = rule110
+applyRule _ = rule30
 
 applyToRow :: (Bool -> Bool -> Bool -> Bool) -> [Bool] -> [Bool]
-applyToRow rule cells = zipWith3 rule 
+applyToRow rule_t cells = zipWith3 rule_t 
     (False:init cells) cells (tail cells ++ [False])
 
 boolToChar::Bool -> String
@@ -74,7 +75,7 @@ display Nothing = []
 display (Just conf) =
     let init = replicate (((window conf) `div` 2) + 1000) False ++ [True] ++ 
                replicate (((window conf) `div` 2) + 1000) False 
-    in loop init (numLines conf) (applyRule (rule conf))
+    in loop init (numLines conf + start conf) (applyRule (rule conf))
         (move conf) (start conf)
 
 printRow::[[Bool]] -> Int -> Int -> IO()
@@ -118,4 +119,4 @@ main = do
                                             maybeConfig)) rows)
                                         (move (fromJust maybeConfig))
                                         (window (fromJust maybeConfig))
-        _ -> return()
+        _ -> putStrLn "Error: no rule defined" >> exitWith (ExitFailure 84)
