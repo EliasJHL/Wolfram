@@ -114,10 +114,13 @@ main::IO()
 main = do
     args <- getArgs
     let maybeConfig = getOpts defaultConf args
-    let rows = display maybeConfig
     case maybeConfig of
-        Just conf | rule conf /= -99 -> printRow (drop (start (fromJust 
-                                            maybeConfig)) rows)
+        Just conf | rule conf /= -99
+            , start conf >= 0
+            , numLines conf >= 0
+            , window conf >= 0 -> let rows = display maybeConfig
+                                    in printRow (drop (start (fromJust 
+                                        maybeConfig)) rows)
                                         (move (fromJust maybeConfig))
                                         (window (fromJust maybeConfig))
         _ -> putStrLn "Error" >> exitWith (ExitFailure 84)
