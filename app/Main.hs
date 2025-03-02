@@ -7,7 +7,8 @@
 
 import System.Environment(getArgs)
 import Data.Maybe(fromJust)
-import System.Exit (exitWith, ExitCode(..))
+import System.Exit(exitWith, ExitCode(..))
+import Data.Char(isDigit)
 
 data Conf = Conf {
     rule::Int,
@@ -106,7 +107,7 @@ getOpts conf args = Just (conf {
 
 getValue::String -> [String] -> Int -> Int
 getValue flag args def_val = case dropWhile (/= flag) args of
-    (_:value:_) -> read value
+    (_:value:_) | all isDigit value -> read value
     _ -> def_val
 
 main::IO()
@@ -119,4 +120,4 @@ main = do
                                             maybeConfig)) rows)
                                         (move (fromJust maybeConfig))
                                         (window (fromJust maybeConfig))
-        _ -> putStrLn "Error: no rule defined" >> exitWith (ExitFailure 84)
+        _ -> putStrLn "Error" >> exitWith (ExitFailure 84)
