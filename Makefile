@@ -9,7 +9,7 @@ NAME_EXEC = wolfram-exe
 
 NAME = wolfram
 
-all: $(NAME_EXEC) 
+all:	$(NAME_EXEC)
 
 $(NAME_EXEC):	compile
 	cp `stack path --local-install-root`/bin/$(NAME_EXEC) .
