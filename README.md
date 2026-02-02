@@ -1,4 +1,4 @@
-# wolfram
+# Wolfram
 
 A command-line tool written in Haskell for generating and displaying patterns from one-dimensional elementary cellular automata, such as those described by Stephen Wolfram.
 
